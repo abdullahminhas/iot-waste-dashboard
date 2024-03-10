@@ -1,0 +1,44 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+h5 {
+  text-transform: capitalize;
+}
+
+.login-form {
+  max-width: 400px;
+  margin: 100px auto;
+}
+
+#sidebarMenu {
+  min-height: 100vh;
+}
+
+.gradient-1 {
+  /* background: linear-gradient(135deg, #00ff80, #008000); */
+  background: rgb(34, 193, 195);
+  background: radial-gradient(
+    circle,
+    rgba(34, 193, 195, 1) 0%,
+    rgba(253, 187, 45, 1) 100%
+  );
+}
+
+.gradient-2 {
+  background: rgb(2, 0, 36);
+  background: radial-gradient(
+    circle,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+}
+
+.gradient-3 {
+  background: rgb(131, 58, 180);
+  background: linear-gradient(
+    90deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 50%,
+    rgba(252, 176, 69, 1) 100%
+  );
+}
