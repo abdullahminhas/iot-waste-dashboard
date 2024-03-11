@@ -13,32 +13,54 @@ h5 {
   min-height: 100vh;
 }
 
+.card {
+  overflow: hidden;
+  position: relative;
+}
+
 .gradient-1 {
-  /* background: linear-gradient(135deg, #00ff80, #008000); */
-  background: rgb(34, 193, 195);
-  background: radial-gradient(
-    circle,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+  background: linear-gradient(to right, #2196f3, #3f51b5);
 }
 
 .gradient-2 {
-  background: rgb(2, 0, 36);
-  background: radial-gradient(
-    circle,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  background: linear-gradient(to right, #9c27b0, #673ab7);
 }
 
 .gradient-3 {
-  background: rgb(131, 58, 180);
-  background: linear-gradient(
-    90deg,
-    rgba(131, 58, 180, 1) 0%,
-    rgba(253, 29, 29, 1) 50%,
-    rgba(252, 176, 69, 1) 100%
-  );
+  background: linear-gradient(to right, #4caf50, #8bc34a);
 }
+
+.gradient-4 {
+  background: linear-gradient(to right, #e91e63, #ff4081);
+}
+
+.gradient-5 {
+  background: linear-gradient(to right, #ff9800, #ff5722);
+}
+
+.gradient-6 {
+  background: linear-gradient(to right, #009688, #00bcd4);
+}
+
+.ribbon {
+  position: absolute;
+  top: 6%;
+  left: -8%;
+  background-color: red;
+  color: white;
+  padding: 5px 10px;
+  transform: rotate(-45deg);
+  z-index: 99;
+  width: 135px;
+  text-align: center;
+}
+
+/* .ribbon:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -20px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 20px solid red;
+} */

@@ -11,6 +11,9 @@ function MyComponent() {
   const [wasteCollectors, setWasteCollectors] = useState([]);
   const [communityMembers, setCommunityMembers] = useState([]);
   const [wasteBins, setWasteBins] = useState([]);
+  const [emptyWasteBins, setEmptyWasteBins] = useState([]);
+  const [filledWasteBins, setFilledWasteBins] = useState([]);
+  const [complains, setComplains] = useState([]);
 
   useEffect(() => {
     const ref = db.ref("users"); // your Realtime Database reference
@@ -42,7 +45,30 @@ function MyComponent() {
 
     ref.on("value", (snapshot) => {
       const dataArray = Object.values(snapshot.val());
+      const emptyBinsArray = dataArray.filter(
+        (bin) => bin.binStatus === "empty"
+      );
+      const filledBinsArray = dataArray.filter(
+        (bin) => bin.binStatus === "filled"
+      );
+      setEmptyWasteBins(emptyBinsArray);
+      setFilledWasteBins(filledBinsArray);
       setWasteBins(dataArray);
+    });
+
+    return () => ref.off(); // Clean up listener on component unmount
+  }, []);
+
+  useEffect(() => {
+    console.log(wasteBins);
+  }, [wasteBins]);
+
+  useEffect(() => {
+    const ref = db.ref("complains"); // your Realtime Database reference
+
+    ref.on("value", (snapshot) => {
+      const dataArray = Object.values(snapshot.val());
+      setComplains(dataArray);
     });
 
     return () => ref.off(); // Clean up listener on component unmount
@@ -74,9 +100,9 @@ function MyComponent() {
   if (auth) {
     return (
       <React.Fragment>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <nav className="navbar navbar-expand-lg bg-dark">
           <div className="container">
-            <a className="navbar-brand" href="/">
+            <a className="navbar-brand text-light" href="/">
               Home
             </a>
             <button
@@ -94,7 +120,7 @@ function MyComponent() {
               <ul className="navbar-nav ms-auto">
                 <li className="nav-item dropdown">
                   <a
-                    className="nav-link dropdown-toggle"
+                    className="nav-link text-light dropdown-toggle"
                     href="#"
                     role="button"
                     data-bs-toggle="dropdown"
@@ -120,7 +146,7 @@ function MyComponent() {
           </div>
         </nav>
         <div className="container mt-5">
-          <div className="row">
+          <div className="row g-4">
             <div className="col-md-4">
               <div className="card border-0 card-body gradient-1">
                 <h6 className="text-light mb-4">Community Members</h6>
@@ -137,12 +163,30 @@ function MyComponent() {
             </div>
             <div className="col-md-4">
               <div className="card border-0 card-body gradient-3">
+                <h6 className="text-light mb-4">Total Complains</h6>
+                <h4 className="text-white mb-0">{complains.length}</h4>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 card-body gradient-4">
                 <h6 className="text-light mb-4">Waste Bins</h6>
                 <h4 className="text-white mb-0">{wasteBins.length}</h4>
               </div>
             </div>
+            <div className="col-md-4">
+              <div className="card border-0 card-body gradient-5">
+                <h6 className="text-light mb-4">Empty Waste Bins</h6>
+                <h4 className="text-white mb-0">{emptyWasteBins.length}</h4>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 card-body gradient-6">
+                <h6 className="text-light mb-4">Filled Waste Bins</h6>
+                <h4 className="text-white mb-0">{filledWasteBins.length}</h4>
+              </div>
+            </div>
           </div>
-          <div className="row mt-4">
+          <div className="row my-4">
             <div className="col-md-12">
               <div className="card border-0 overflow-hidden">
                 <MapContainer locations={wasteBins} />

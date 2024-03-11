@@ -1,48 +1,44 @@
 "use client";
-import React, { useEffect, useState, useContext } from "react";
-import { db } from "@/components/firebase"; // Import the db object
+import React, { useEffect, useContext, useState } from "react";
 import { AppContext } from "@/context/appContext";
 import { useRouter } from "next/navigation";
+import { db } from "@/components/firebase";
 
-const viewRecods = () => {
+const complainFeedbacks = () => {
   const router = useRouter();
   const { auth, setAuth } = useContext(AppContext);
-  const [currentSelection, setCurrentSelection] = useState("All");
-  const [data, setData] = useState([]);
+  const [data, setdata] = useState([]);
+  const [currentSelection, setCurrentSelection] = useState("complains");
 
-  const fetchData = () => {
-    if (currentSelection === "All") {
-      const ref = db.ref("users"); // your Realtime Database reference
+  useEffect(() => {
+    if (currentSelection === "complains") {
+      const ref = db.ref("complains"); // your Realtime Database reference
 
       ref.on("value", (snapshot) => {
-        setData(snapshot.val());
+        const dataArray = Object.values(snapshot.val());
+        setdata(dataArray);
       });
 
       return () => ref.off(); // Clean up listener on component unmount
-    } else {
-      const ref = db.ref("users"); // your Realtime Database reference
+    } else if (currentSelection === "feedbacks") {
+      const ref = db.ref("feedback"); // your Realtime Database reference
 
       ref.on("value", (snapshot) => {
-        const collectorData = [];
-        Object.keys(snapshot.val()).forEach((key) => {
-          if (snapshot.val()[key].userType === currentSelection) {
-            collectorData.push(snapshot.val()[key]);
-          }
-        });
-
-        setData(collectorData);
+        const dataArray = Object.values(snapshot.val());
+        setdata(dataArray);
       });
+
       return () => ref.off(); // Clean up listener on component unmount
     }
-  };
+  }, [currentSelection]);
 
   const onRadioChange = (event) => {
     setCurrentSelection(event.target.id);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [currentSelection]);
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
     if (auth === false) {
@@ -65,7 +61,7 @@ const viewRecods = () => {
         <nav className="navbar navbar-expand-lg bg-dark">
           <div className="container">
             <a className="navbar-brand text-light" href="/">
-              View Records
+              Complains & Feedbacks
             </a>
             <button
               className="navbar-toggler"
@@ -113,62 +109,39 @@ const viewRecods = () => {
               type="radio"
               className="btn-check"
               name="options-base"
-              id="All"
+              id="complains"
               autoComplete="off"
               onChange={onRadioChange}
               defaultChecked
             />
-            <label className="btn" htmlFor="All">
-              All
-            </label>
-            <input
-              type="radio"
-              className="btn-check"
-              name="options-base"
-              id="community_person"
-              autoComplete="off"
-              onChange={onRadioChange}
-            />
-            <label className="btn" htmlFor="community_person">
-              Community Members
+            <label className="btn" htmlFor="complains">
+              Complains
             </label>
 
             <input
               type="radio"
               className="btn-check"
               name="options-base"
-              id="collector"
-              autoComplete="off"
+              id="feedbacks"
               onChange={onRadioChange}
+              autoComplete="off"
             />
-            <label className="btn" htmlFor="collector">
-              Waste Collectors
+            <label className="btn" htmlFor="feedbacks">
+              Feedbacks
             </label>
           </div>
           <div className="row my-4 g-4">
-            {Object.values(data).map((user) => (
-              <div className="col-md-4" key={user.uId}>
-                <div className="card card-body">
-                  <div className="d-flex flex-row align-items-center">
-                    <div
-                      style={{
-                        display: "block",
-                        width: "55px",
-                        height: "55px",
-                        background: "lightgrey",
-                        borderRadius: "50px",
-                      }}
-                    ></div>
-                    <div className="d-flex flex-column ms-3">
-                      <h6 className="text-capitalize">{user.userName}</h6>
-                      <small className="text-muted">{user.userEmail}</small>
-                    </div>
+            {data.map((message, index) => (
+              <div key={index} className="col-md-4">
+                <div className="card mb-4 overflow-visible h-100">
+                  <span className="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+                    {index + 1}
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                  <div className="card-body">
+                    <h6 className="card-title">{message.email}</h6>
+                    <p className="card-text text-muted">{message.message}</p>
                   </div>
-                  <h4 className="mb-0 mt-4 text-center">
-                    {user.userType === "community_person"
-                      ? " Community Person"
-                      : "Waste Collector"}
-                  </h4>
                 </div>
               </div>
             ))}
@@ -179,4 +152,4 @@ const viewRecods = () => {
   }
 };
 
-export default viewRecods;
+export default complainFeedbacks;

@@ -4,7 +4,7 @@ import { db } from "@/components/firebase"; // Import the db object
 import { AppContext } from "@/context/appContext";
 import { useRouter } from "next/navigation";
 
-const bins = () => {
+const addBins = () => {
   const router = useRouter();
   const { auth, setAuth } = useContext(AppContext);
   const [data, setData] = useState({});
@@ -38,6 +38,7 @@ const bins = () => {
       binLat: parseFloat(event.target[2].value),
       binLng: parseFloat(event.target[3].value),
       binCollector: event.target[4].value,
+      binId: event.target[5].value,
     };
 
     // Insert data into the database
@@ -72,9 +73,9 @@ const bins = () => {
   if (auth) {
     return (
       <React.Fragment>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <nav className="navbar navbar-expand-lg bg-dark">
           <div className="container">
-            <a className="navbar-brand" href="/bins">
+            <a className="navbar-brand text-light" href="/">
               Add Bins
             </a>
             <button
@@ -92,7 +93,7 @@ const bins = () => {
               <ul className="navbar-nav ms-auto">
                 <li className="nav-item dropdown">
                   <a
-                    className="nav-link dropdown-toggle"
+                    className="nav-link text-light dropdown-toggle"
                     href="#"
                     role="button"
                     data-bs-toggle="dropdown"
@@ -118,63 +119,62 @@ const bins = () => {
           </div>
         </nav>
         <div className="container mt-5">
-          <form onSubmit={onFormSubmit} className="row">
+          <form
+            onSubmit={onFormSubmit}
+            className="row justify-content-center g-3"
+          >
             <div className="col-md-6">
-              <div className="mb-3">
-                <label htmlFor="binName" className="form-label">
-                  Bin Name
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="binName"
-                  placeholder="Viking Street Bin"
-                />
-              </div>
+              <label htmlFor="binName" className="form-label">
+                Bin Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="binName"
+                placeholder="Viking Street Bin"
+              />
             </div>
             <div className="col-md-6">
-              <div className="mb-3">
-                <label htmlFor="binLocation" className="form-label">
-                  Bin Location
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="binLocation"
-                  placeholder="Street #4 Bin"
-                />
-              </div>
+              <label htmlFor="binLocation" className="form-label">
+                Bin Location
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="binLocation"
+                placeholder="Street #4 Bin"
+              />
             </div>
             <div className="col-md-6">
-              <div className="mb-3">
-                <label htmlFor="binLocation" className="form-label">
-                  Bin Latitude
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="binLatitude"
-                  placeholder="Lat"
-                />
-              </div>
+              <label htmlFor="binLocation" className="form-label">
+                Bin Latitude
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="binLatitude"
+                placeholder="Lat"
+              />
             </div>
             <div className="col-md-6">
-              <div className="mb-3">
-                <label htmlFor="binLocation" className="form-label">
-                  Bin Longitude
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="binLatitude"
-                  placeholder="Long"
-                />
-              </div>
+              <label htmlFor="binLocation" className="form-label">
+                Bin Longitude
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="binLatitude"
+                placeholder="Long"
+              />
             </div>
             <div className="col-md-6">
+              <label htmlFor="binAssign" className="form-label">
+                Bin Id
+              </label>
               <select
                 className="form-select text-muted"
                 aria-label="Default select example"
+                id="binAssign"
               >
                 <option defaultValue hidden>
                   Assign Bin to collector
@@ -188,7 +188,18 @@ const bins = () => {
               </select>
             </div>
             <div className="col-md-6">
-              <button className="btn btn-primary w-50" type="submit">
+              <label htmlFor="binId" className="form-label">
+                Bin Id
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="binId"
+                placeholder="Bin Id"
+              />
+            </div>
+            <div className="col-md-3">
+              <button className="btn btn-primary w-100" type="submit">
                 Submit
               </button>
             </div>
@@ -199,4 +210,4 @@ const bins = () => {
   }
 };
 
-export default bins;
+export default addBins;
