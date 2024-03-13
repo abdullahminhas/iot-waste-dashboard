@@ -1,62 +1,32 @@
 "use client";
-import React, { useEffect, useState, useContext } from "react";
-import { db } from "@/components/firebase"; // Import the db object
+import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "@/context/appContext";
 import { useRouter } from "next/navigation";
+import { db } from "@/components/firebase";
 
-const addBins = () => {
+const addCommunityMem = () => {
   const router = useRouter();
   const { auth, setAuth } = useContext(AppContext);
   const [data, setData] = useState({});
-  const [currentSelection, setCurrentSelection] = useState("community_person");
-
-  useEffect(() => {
-    const ref = db.ref("users"); // your Realtime Database reference
-
-    ref.on("value", (snapshot) => {
-      const collectorData = {};
-      Object.keys(snapshot.val()).forEach((key) => {
-        if (snapshot.val()[key].userType === currentSelection) {
-          collectorData[key] = snapshot.val()[key];
-        }
-      });
-      setData(collectorData);
-    });
-
-    return () => ref.off(); // Clean up listener on component unmount
-  }, [currentSelection]);
-
-  const onSelectionChange = (event) => {
-    event.preventDefault();
-
-    setCurrentSelection(event.target.value);
-  };
 
   const onFormSubmit = async (event) => {
     event.preventDefault();
-
-    const keyName =
-      event.target[5].value === "community_person"
-        ? "comCollector"
-        : "binCollector";
 
     // Reference to the database
     const dbRef = db.ref();
 
     // Data to be inserted
-    let binData = {
-      binName: event.target[0].value,
-      binLocation: event.target[1].value,
-      binLat: parseFloat(event.target[2].value),
-      binLng: parseFloat(event.target[3].value),
-      binId: event.target[4].value,
-      [keyName]: event.target[6].value,
+    let pData = {
+      userName: event.target[0].value,
+      userEmail: event.target[1].value,
+      userType: event.target[2].value,
+      uId: event.target[3].value,
     };
 
     // Insert data into the database
     dbRef
-      .child("bins")
-      .push(binData)
+      .child("users")
+      .push(pData)
       .then(() => {
         console.log("Data inserted successfully");
       })
@@ -64,7 +34,7 @@ const addBins = () => {
         console.error("Error inserting data:", error);
       });
 
-    console.log(binData);
+    console.log(pData);
   };
 
   useEffect(() => {
@@ -88,7 +58,7 @@ const addBins = () => {
         <nav className="navbar navbar-expand-lg bg-dark">
           <div className="container">
             <a className="navbar-brand text-light" href="/">
-              Add Bins
+              Add Person
             </a>
             <button
               className="navbar-toggler"
@@ -136,98 +106,77 @@ const addBins = () => {
             className="row justify-content-center g-3"
           >
             <div className="col-md-6">
-              <label htmlFor="binName" className="form-label">
-                Bin Name
+              <label htmlFor="pName" className="form-label">
+                Name
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="binName"
-                placeholder="Viking Street Bin"
+                id="pName"
+                placeholder="Jane Doe"
               />
             </div>
             <div className="col-md-6">
-              <label htmlFor="binLocation" className="form-label">
-                Bin Location
+              <label htmlFor="pemail" className="form-label">
+                Email
               </label>
               <input
-                type="text"
+                type="email"
                 className="form-control"
-                id="binLocation"
-                placeholder="Street #4 Bin"
+                id="pemail"
+                placeholder="example@test.com"
               />
             </div>
-            <div className="col-md-4">
-              <label htmlFor="binLocation" className="form-label">
-                Bin Latitude
+            {/* <div className="col-md-6">
+              <label htmlFor="pLocation" className="form-label">
+                Latitude
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="binLatitude"
+                id="pLocation"
                 placeholder="Lat"
               />
             </div>
-            <div className="col-md-4">
-              <label htmlFor="binLocation" className="form-label">
-                Bin Longitude
+            <div className="col-md-6">
+              <label htmlFor="pinLocation" className="form-label">
+                Longitude
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="binLatitude"
+                id="pinLocation"
                 placeholder="Long"
               />
-            </div>
-            <div className="col-md-4">
-              <label htmlFor="binId" className="form-label">
-                Bin Id
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="binId"
-                placeholder="Bin Id"
-              />
-            </div>
+            </div> */}
             <div className="col-md-6">
-              <label htmlFor="binSelection" className="form-label">
-                Select Person
+              <label htmlFor="pSelection" className="form-label">
+                Role
               </label>
               <select
                 className="form-select text-muted"
                 aria-label="Default select example"
-                onChange={onSelectionChange}
-                id="binSelection"
+                id="pSelection"
               >
-                <option value="community_person" defaultValue>
-                  Community Member
+                <option defaultValue hidden>
+                  Role
                 </option>
+                <option value="community_person">Community Member</option>
                 <option value="collector">Waste Collector</option>
               </select>
             </div>
             <div className="col-md-6">
-              <label htmlFor="binAssign" className="form-label">
-                Assign Bin
+              <label htmlFor="pId" className="form-label">
+                User Id
               </label>
-              <select
-                className="form-select text-muted"
-                aria-label="Default select example"
-                id="binAssign"
-              >
-                <option defaultValue hidden>
-                  Assign Bin
-                </option>
-                {data &&
-                  Object.values(data).map((user) => (
-                    <option value={user.uId} key={user.uId}>
-                      {user.userName}
-                    </option>
-                  ))}
-              </select>
+              <input
+                type="text"
+                className="form-control"
+                id="pId"
+                placeholder="User Id"
+              />
             </div>
-
-            <div className="col-md-4">
+            <div className="col-md-3">
               <button className="btn btn-primary w-100" type="submit">
                 Submit
               </button>
@@ -239,4 +188,4 @@ const addBins = () => {
   }
 };
 
-export default addBins;
+export default addCommunityMem;

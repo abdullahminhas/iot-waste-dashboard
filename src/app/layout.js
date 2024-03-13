@@ -57,6 +57,11 @@ export default function RootLayout({ children }) {
                       </a>
                     </li>
                     <li className="nav-item">
+                      <a href="/reviewRequest" className="nav-link text-white">
+                        Review Requests
+                      </a>
+                    </li>
+                    <li className="nav-item">
                       <a href="/viewRecords" className="nav-link text-white">
                         View Records
                       </a>
@@ -64,6 +69,11 @@ export default function RootLayout({ children }) {
                     <li className="nav-item">
                       <a href="/viewBins" className="nav-link text-white">
                         View Bins
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a href="addCommunityMem" className="nav-link text-white">
+                        Add Members
                       </a>
                     </li>
                     <li className="nav-item">
