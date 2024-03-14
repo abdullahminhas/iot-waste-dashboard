@@ -18,7 +18,7 @@ const MapContainer = ({ locations }) => {
   }, [locations]);
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyB8Zp_xB5VjC-sgVqsPeLxOyxRnfvqCasE">
+    <LoadScript googleMapsApiKey="AIzaSyAtZCsk_RMN50K19KKNrUm8cFimEwViDwE">
       <GoogleMap mapContainerStyle={mapStyles} zoom={11} center={defaultCenter}>
         {locations.map((location, index) => (
           <Marker

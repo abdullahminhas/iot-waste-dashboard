@@ -8,7 +8,7 @@ const mapContainerStyle = {
 
 const singleMapComponent = ({ location }) => {
   return (
-    <LoadScript googleMapsApiKey="AIzaSyB8Zp_xB5VjC-sgVqsPeLxOyxRnfvqCasE">
+    <LoadScript googleMapsApiKey="AIzaSyAtZCsk_RMN50K19KKNrUm8cFimEwViDwE">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={15}
