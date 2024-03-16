@@ -9,6 +9,9 @@ const viewRecods = () => {
   const { auth, setAuth } = useContext(AppContext);
   const [currentSelection, setCurrentSelection] = useState("All");
   const [data, setData] = useState([]);
+  const [location, setLocation] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
+  const [selectedAreas, setSelectedAreas] = useState({});
 
   const fetchData = () => {
     if (currentSelection === "All") {
@@ -36,9 +39,61 @@ const viewRecods = () => {
     }
   };
 
+  useEffect(() => {
+    const ref = db.ref("locations"); // your Realtime Database reference
+
+    ref.on("value", (snapshot) => {
+      console.log(snapshot.val());
+      setLocation(snapshot.val());
+    });
+
+    return () => ref.off(); // Clean up listener on component unmount
+  }, []);
+
   const onRadioChange = (event) => {
     setCurrentSelection(event.target.id);
   };
+
+  const handleAreaChange = (event, userId) => {
+    setSelectedAreas((prevState) => ({
+      ...prevState,
+      [userId]: event.target.value,
+    }));
+  };
+
+  const handleSectorChange = (event, user) => {
+    const selectedOption = JSON.parse(event.target.value);
+    const selectedSector = selectedOption.sector;
+    const selectedData = selectedOption.data;
+    // Now you have both the selected sector name and its corresponding data object
+    console.log(selectedSector);
+    console.log(selectedData);
+    const newData = {
+      ...user,
+      area: selectedSector,
+      userlat: selectedData.lat,
+      userLng: selectedData.lng,
+    };
+
+    console.log(newData);
+
+    const ref = db.ref(`users/${user.uId}`); // your Realtime Database reference
+
+    ref
+      .update(newData)
+      .then(() => {
+        console.log("Record updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Error updating record: ", error);
+      });
+  };
+
+  const handleSwitchChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  // const sectors = selectedArea ? Object.keys(location[selectedArea]) : [];
 
   useEffect(() => {
     fetchData();
@@ -145,10 +200,28 @@ const viewRecods = () => {
               Waste Collectors
             </label>
           </div>
+          <div className="d-flex flex-row justify-content-end">
+            <div className="form-check form-switch row-reverse">
+              <label
+                className="form-check-label"
+                htmlFor="flexSwitchCheckDefault"
+              >
+                Edit to Assign Area
+              </label>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckDefault"
+                checked={isChecked}
+                onChange={handleSwitchChange}
+              />
+            </div>
+          </div>
           <div className="row my-4 g-4">
             {Object.values(data).map((user) => (
               <div className="col-md-4" key={user.uId}>
-                <div className="card card-body">
+                <div className="card card-body h-100">
                   <div className="d-flex flex-row align-items-center">
                     <div
                       style={{
@@ -169,6 +242,58 @@ const viewRecods = () => {
                       ? " Community Person"
                       : "Waste Collector"}
                   </h4>
+                  {isChecked && (
+                    <React.Fragment>
+                      {user.userType === "collector" && (
+                        <div className="row mt-2">
+                          <div className="col-md-6">
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={(e) => handleAreaChange(e, user.uId)}
+                              value={selectedAreas[user.uId] || ""}
+                            >
+                              <option value="" disabled>
+                                Select Area
+                              </option>
+                              {Object.keys(location).map((loc, index) => (
+                                <option value={loc} key={index}>
+                                  {loc}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          {selectedAreas[user.uId] && (
+                            <div className="col-md-6">
+                              <select
+                                className="form-select"
+                                onChange={(e) => handleSectorChange(e, user)}
+                              >
+                                <option value="" disabled>
+                                  Select Sector
+                                </option>
+                                {Object.keys(
+                                  location[selectedAreas[user.uId]]
+                                ).map((sector, index) => (
+                                  <option
+                                    value={JSON.stringify({
+                                      sector: sector,
+                                      data: location[selectedAreas[user.uId]][
+                                        sector
+                                      ],
+                                    })}
+                                    key={index}
+                                  >
+                                    {sector}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </React.Fragment>
+                  )}
                 </div>
               </div>
             ))}

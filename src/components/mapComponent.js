@@ -1,34 +1,50 @@
-import React, { useEffect } from "react";
-import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api";
+import React, { useEffect, useState } from "react";
+import { Map, Marker } from "pigeon-maps";
 
-const MapContainer = ({ locations }) => {
-  const mapStyles = {
-    height: `calc(100vh - 240px)`,
-    minHeight: "400px",
-    width: "100%",
-  };
-
-  const defaultCenter = {
-    lat: 33.6844, // Latitude of Islamabad
-    lng: 73.0479, // Longitude of Islamabad
-  };
+function MapComponent({ locations }) {
+  const [geoLocation, setGeoLocation] = useState([]);
+  // const locations = [
+  //   { latitude: 33.572443, longitude: 73.143698 },
+  //   { latitude: 33.572443, longitude: 73.145174 }, // Example location 2
+  //   { latitude: 33.571729, longitude: 73.145214 }, // Example location 3
+  // ];
 
   useEffect(() => {
-    console.log("locations", locations);
+    console.log(locations);
+    const extractedLocations = locations.flatMap((streetData) =>
+      Object.values(streetData).map((binData) => ({
+        latitude: binData.binLat,
+        longitude: binData.binLng,
+      }))
+    );
+
+    setGeoLocation(extractedLocations);
+    console.log(extractedLocations);
   }, [locations]);
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAtZCsk_RMN50K19KKNrUm8cFimEwViDwE">
-      <GoogleMap mapContainerStyle={mapStyles} zoom={11} center={defaultCenter}>
-        {locations.map((location, index) => (
-          <Marker
-            key={index}
-            position={{ lat: location.binLat, lng: location.binLng }}
-          />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+    <Map
+      height={400}
+      defaultCenter={[33.57220086492103, 73.14640631473502]}
+      defaultZoom={15}
+    >
+      {geoLocation.map((location, index) => (
+        <Marker
+          key={index}
+          anchor={[location.latitude, location.longitude]} // Use square brackets for array
+          width={50}
+          color="red"
+          onClick={() =>
+            alert(
+              "Marker clicked for location ",
+              location.latitude,
+              location.longitude
+            )
+          }
+        />
+      ))}
+    </Map>
   );
-};
+}
 
-export default MapContainer;
+export default MapComponent;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { db } from "@/components/firebase"; // Import the db object
 import { AppContext } from "@/context/appContext";
-import MapContainer from "@/components/mapComponent";
+import MapComponent from "@/components/mapComponent";
 import { useRouter } from "next/navigation";
 
 function MyComponent() {
@@ -189,7 +189,7 @@ function MyComponent() {
           <div className="row my-4">
             <div className="col-md-12">
               <div className="card border-0 overflow-hidden">
-                <MapContainer locations={wasteBins} />
+                <MapComponent locations={wasteBins} />
               </div>
             </div>
           </div>

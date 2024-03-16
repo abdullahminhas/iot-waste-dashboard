@@ -9,6 +9,8 @@ const WasteBinList = () => {
   const router = useRouter();
   const { auth, setAuth } = useContext(AppContext);
   const [wasteBins, setWasteBins] = useState([]);
+  const [emptyWasteBins, setEmptyWasteBins] = useState([]);
+  const [filledWasteBins, setFilledWasteBins] = useState([]);
   const [currentSelection, setCurrentSelection] = useState("All");
 
   const fetchData = async () => {
@@ -65,6 +67,25 @@ const WasteBinList = () => {
     }
   };
 
+  useEffect(() => {
+    const ref = db.ref("bins"); // your Realtime Database reference
+
+    ref.on("value", (snapshot) => {
+      const dataArray = Object.values(snapshot.val());
+      const emptyBinsArray = dataArray.filter(
+        (bin) => bin.binStatus === "empty"
+      );
+      const filledBinsArray = dataArray.filter(
+        (bin) => bin.binStatus === "filled"
+      );
+      setEmptyWasteBins(emptyBinsArray);
+      setFilledWasteBins(filledBinsArray);
+      setWasteBins(dataArray);
+    });
+
+    return () => ref.off(); // Clean up listener on component unmount
+  }, []);
+
   const onRadioChange = (event) => {
     if (event.target.id === "All") {
       router.refresh();
@@ -74,7 +95,7 @@ const WasteBinList = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, [currentSelection]);
 
   useEffect(() => {
@@ -187,23 +208,30 @@ const WasteBinList = () => {
             </label>
           </div>
           <div className="row my-4 g-4">
-            {wasteBins.map((bin) => (
-              <div className="col-md-4" key={bin.binId}>
-                <div className="card">
-                  {bin.binStatus.toLowerCase() === "filled" ? (
-                    <div className="ribbon">Filled</div>
-                  ) : (
-                    ""
-                  )}
-                  <SingleMapComponent location={bin} />
-                  <div className="card-body">
-                    <div className="d-flex flex-row align-items-center justify-content-between">
-                      <h5 className="mb-0">{bin.collectorData?.userName}</h5>
-                      <small className="text-muted">{bin.binLocation}</small>
+            {wasteBins.map((bin, index) => (
+              <React.Fragment key={index}>
+                {Object.entries(bin).map(([streetName, binData]) => (
+                  <div className="col-md-4">
+                    <div className="card" key={streetName}>
+                      {binData.binPercentage === "filled" ? (
+                        <div className="ribbon">Filled</div>
+                      ) : (
+                        ""
+                      )}
+                      <SingleMapComponent location={binData} />
+                      <div className="card-body">
+                        {Object.entries(binData).map(([key, value]) => (
+                          <React.Fragment>
+                            <span key={key}>
+                              <strong>{key}: </strong> {value}
+                            </span>
+                          </React.Fragment>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                ))}
+              </React.Fragment>
             ))}
           </div>
         </div>

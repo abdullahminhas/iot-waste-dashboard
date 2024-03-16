@@ -1,27 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { GoogleMap, Marker, LoadScript } from "@react-google-maps/api"; // Adjust for your chosen library
-
-const mapContainerStyle = {
-  width: "100%",
-  height: "200px",
-};
+import React, { useEffect, useState } from "react";
+import { Map, Marker } from "pigeon-maps";
 
 const singleMapComponent = ({ location }) => {
+  // useEffect(() => {
+  //   console.log(location);
+  // }, [location]);
+
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAtZCsk_RMN50K19KKNrUm8cFimEwViDwE">
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={15}
-        center={{ lat: location.binLat, lng: location.binLng }}
-      >
-        {location && (
-          <Marker
-            key={1} // Add a key for the single marker
-            position={{ lat: location.binLat, lng: location.binLng }}
-          />
-        )}
-      </GoogleMap>
-    </LoadScript>
+    <Map
+      height={250}
+      defaultCenter={[location.binLat, location.binLng]}
+      defaultZoom={15}
+    >
+      <Marker
+        width={50}
+        anchor={[location.binLat, location.binLng]}
+        color="Red"
+        onClick={() => console.log(location.binLat, location.binLng)}
+      />
+    </Map>
   );
 };
 
