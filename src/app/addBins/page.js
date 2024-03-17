@@ -114,11 +114,11 @@ const addBins = () => {
                     Profile
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
+                    {/* <li>
                       <a className="dropdown-item" href="#">
                         Sttings
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a className="dropdown-item" onClick={handleLogout}>
                         Logout

@@ -8,7 +8,7 @@ const singleMapComponent = ({ location }) => {
 
   return (
     <Map
-      height={250}
+      height={200}
       defaultCenter={[location.binLat, location.binLng]}
       defaultZoom={15}
     >

@@ -14,6 +14,8 @@ function MyComponent() {
   const [emptyWasteBins, setEmptyWasteBins] = useState([]);
   const [filledWasteBins, setFilledWasteBins] = useState([]);
   const [complains, setComplains] = useState([]);
+  const [extratcedWasteBins, setExtractedWasteBins] = useState([]);
+  const [currentSelection, setCurrentSelection] = useState("All");
 
   useEffect(() => {
     const ref = db.ref("users"); // your Realtime Database reference
@@ -58,6 +60,32 @@ function MyComponent() {
 
     return () => ref.off(); // Clean up listener on component unmount
   }, []);
+
+  useEffect(() => {
+    // console.log(locations);
+    const extractedLocations = wasteBins.flatMap((streetData) =>
+      Object.values(streetData).map((binData) => ({
+        latitude: binData.binLat,
+        longitude: binData.binLng,
+        binStatus: binData.binStatus, // Add binStatus to the extracted data
+      }))
+    );
+
+    if (currentSelection === "All") {
+      setExtractedWasteBins(extractedLocations);
+    } else {
+      setExtractedWasteBins(
+        extractedLocations.filter((bin) => bin.binStatus === currentSelection)
+      );
+    }
+    console.log(extractedLocations);
+  }, [wasteBins, currentSelection]);
+
+  const handleFilterChange = (event) => {
+    event.preventDefault();
+
+    setCurrentSelection(event.target.value);
+  };
 
   useEffect(() => {
     console.log(wasteBins);
@@ -129,11 +157,12 @@ function MyComponent() {
                     Profile
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
+                    {/* <li>
                       <a className="dropdown-item" href="#">
                         Sttings
                       </a>
                     </li>
+                    */}
                     <li>
                       <a className="dropdown-item" onClick={handleLogout}>
                         Logout
@@ -186,10 +215,27 @@ function MyComponent() {
               </div>
             </div>
           </div>
-          <div className="row my-4">
+          <div className="row justify-content-end mt-4">
+            <div className="col-md-4">
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={handleFilterChange}
+              >
+                <option defaultValue hidden>
+                  Filer Bins
+                </option>
+                <option value="All">All</option>
+                <option value="filled">Filled</option>
+                <option value="partial">Partial</option>
+                <option value="empty">Empty</option>
+              </select>
+            </div>
+          </div>
+          <div className="row mb-4 mt-2">
             <div className="col-md-12">
               <div className="card border-0 overflow-hidden">
-                <MapComponent locations={wasteBins} />
+                <MapComponent locations={extratcedWasteBins} />
               </div>
             </div>
           </div>

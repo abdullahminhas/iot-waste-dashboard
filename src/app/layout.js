@@ -51,11 +51,11 @@ export default function RootLayout({ children }) {
                         Home
                       </a>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <a href="/addBins" className="nav-link text-white">
                         Add Bins
                       </a>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                       <a href="/reviewRequest" className="nav-link text-white">
                         Review Requests
@@ -71,11 +71,11 @@ export default function RootLayout({ children }) {
                         View Bins
                       </a>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <a href="addCommunityMem" className="nav-link text-white">
                         Add Members
                       </a>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                       <a
                         href="complainFeedbacks"

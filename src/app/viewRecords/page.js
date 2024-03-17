@@ -146,11 +146,11 @@ const viewRecods = () => {
                     Profile
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
+                    {/* <li>
                       <a className="dropdown-item" href="#">
                         Sttings
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a className="dropdown-item" onClick={handleLogout}>
                         Logout
@@ -233,7 +233,9 @@ const viewRecods = () => {
                       }}
                     ></div>
                     <div className="d-flex flex-column ms-3">
-                      <h6 className="text-capitalize">{user.userName}</h6>
+                      <h6 className="text-capitalize">
+                        {user.userName ? user.userName : "N/A"}
+                      </h6>
                       <small className="text-muted">{user.userEmail}</small>
                     </div>
                   </div>
@@ -246,50 +248,31 @@ const viewRecods = () => {
                     <React.Fragment>
                       {user.userType === "collector" && (
                         <div className="row mt-2">
-                          <div className="col-md-6">
+                          <div className="col-md-12">
                             <select
                               className="form-select"
-                              aria-label="Default select example"
-                              onChange={(e) => handleAreaChange(e, user.uId)}
-                              value={selectedAreas[user.uId] || ""}
+                              onChange={(e) => handleSectorChange(e, user)}
                             >
                               <option value="" disabled>
-                                Select Area
+                                Select Sector
                               </option>
-                              {Object.keys(location).map((loc, index) => (
-                                <option value={loc} key={index}>
-                                  {loc}
-                                </option>
-                              ))}
+                              {Object.keys(location).map((area) =>
+                                Object.keys(location[area]).map(
+                                  (sector, index) => (
+                                    <option
+                                      value={JSON.stringify({
+                                        sector: sector,
+                                        data: location[area][sector],
+                                      })}
+                                      key={index}
+                                    >
+                                      {sector}
+                                    </option>
+                                  )
+                                )
+                              )}
                             </select>
                           </div>
-                          {selectedAreas[user.uId] && (
-                            <div className="col-md-6">
-                              <select
-                                className="form-select"
-                                onChange={(e) => handleSectorChange(e, user)}
-                              >
-                                <option value="" disabled>
-                                  Select Sector
-                                </option>
-                                {Object.keys(
-                                  location[selectedAreas[user.uId]]
-                                ).map((sector, index) => (
-                                  <option
-                                    value={JSON.stringify({
-                                      sector: sector,
-                                      data: location[selectedAreas[user.uId]][
-                                        sector
-                                      ],
-                                    })}
-                                    key={index}
-                                  >
-                                    {sector}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
                         </div>
                       )}
                     </React.Fragment>

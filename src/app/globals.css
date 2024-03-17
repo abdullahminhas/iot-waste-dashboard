@@ -55,6 +55,10 @@ h5 {
   text-align: center;
 }
 
+.progress-bar {
+  overflow: visible;
+}
+
 /* .ribbon:before {
   content: "";
   position: absolute;
